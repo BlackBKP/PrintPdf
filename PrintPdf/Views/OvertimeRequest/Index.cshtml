@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Overtime Request";
+}
+<div class="row p-3">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Overtime Request</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-10">
+
+                        </div>
+                        <div class="col-xl-2">
+                            <button id="btn_add" type="button" class="btn btn-primary form-control">
+                                <i class="fas fa-plus"></i> New Request
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <table id="table_request" class="table table-sm table-bordered">
+                            <thead class="text-center">
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Month</th>
+                                    <th>Location</th>
+                                    <th>View</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>Print</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_request" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Create Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <div class="form-group">
+                        <label>ชื่อพนักงาน</label>
+                        <input type="text" class="form-control" />
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Job</label>
+                        <input type="text" class="form-control" />
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Location</label>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <select class="form-control">
+                                <option>Office</option>
+                                <option>Site</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-8">
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <label>จำนวนวัน</label>
+                            <input type="text" class="form-control" />
+                        </div>
+                        <div class="col-xl-8">
+                            <label>ค่าทำงานล่วงเวลา</label>
+                            <select class="form-control">
+                                <option>เบิก</option>
+                                <option>ไม่เบิก</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>วันทำงานปกติ</label>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <label>วันเริ่มต้น - วันสิ้นสุด</label>
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-6">
+                            <label>ระหว่างเวลา</label>
+                            <input type="time"  class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>วันหยุด</label>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xl-6">
+                            <label>วันเริ่มต้น - วันสิ้นสุด</label>
+                            <input type="date" class="form-control" />
+                        </div>
+                        <div class="col-xl-6">
+                            <label>ระหว่างเวลา</label>
+                            <input type="time" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>วัตถุประสงค์และรายละเอียดในการทำงานนอกเวลา</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(async function () {
+            GenerateTableRequest();
+        });
+
+        $('#btn_add').on('click', function () {
+            $('#modal_request').modal();
+        });
+
+        function GenerateTableRequest() {
+            var datas = [];
+
+            datas.push([
+                "J99-9999",
+                "APR 2022",
+                "HQ",
+                "",
+                "",
+                "",
+                ""
+            ]);
+
+            $('#table_request').DataTable({
+                data: datas,
+                rowCallback: function (row, data) {
+                    $('td:eq(3)', row).html(`
+                        <button type="button" class="btn btn-sm btn-info">
+                            <i class="fas fa-info"></i> Detail
+                        </button>
+                    `);
+
+                    $('td:eq(4)', row).html(`
+                        <button type="button" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    `);
+
+                    $('td:eq(5)', row).html(`
+                        <button type="button" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    `);
+
+                    $('td:eq(6)', row).html(`
+                        <button type="button" class="btn btn-sm btn-success">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    `);
+                }
+            });
+        }
+
+
+    </script>
+}
