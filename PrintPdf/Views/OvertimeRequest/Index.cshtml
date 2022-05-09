@@ -23,9 +23,10 @@
                         <table id="table_request" class="table table-sm table-bordered">
                             <thead class="text-center">
                                 <tr>
-                                    <th>Job ID</th>
+                                    <th>Form ID</th>
+                                    <th>User</th>
+                                    <th>Job</th>
                                     <th>Month</th>
-                                    <th>Location</th>
                                     <th>View</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -143,9 +144,24 @@
 @section Scripts
 {
     <script type="text/javascript">
+        var requests = [];
+
         $(document).ready(async function () {
+            await GetRequests();
             GenerateTableRequest();
         });
+
+        async function GetRequests() {
+            await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRequests", "OvertimeRequest")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {},
+                success: function (response) {
+                    requests = response;
+                }
+            });
+        }
 
         $('#btn_add').on('click', function () {
             $('#modal_request').modal();
@@ -154,39 +170,39 @@
         function GenerateTableRequest() {
             var datas = [];
 
-            datas.push([
-                "J99-9999",
-                "APR 2022",
-                "HQ",
-                "",
-                "",
-                "",
-                ""
-            ]);
+            for (var i = 0; i < requests.length; i++) {
+                datas.push([
+                    requests[i].form_id,
+                    requests[i].employee_name,
+                    requests[i].job_id,
+                    requests[i].form_id.substring(0, 4) + " " + requests[i].form_id.substring(4, 7),
+                    "","","",""
+                ]);
+            }
 
             $('#table_request').DataTable({
                 data: datas,
                 rowCallback: function (row, data) {
-                    $('td:eq(3)', row).html(`
+                    $('td:eq(4)', row).html(`
                         <button type="button" class="btn btn-sm btn-info">
                             <i class="fas fa-info"></i> Detail
                         </button>
                     `);
 
-                    $('td:eq(4)', row).html(`
+                    $('td:eq(5)', row).html(`
                         <button type="button" class="btn btn-sm btn-warning">
                             <i class="fas fa-edit"></i> Edit
                         </button>
                     `);
 
-                    $('td:eq(5)', row).html(`
+                    $('td:eq(6)', row).html(`
                         <button type="button" class="btn btn-sm btn-danger">
                             <i class="fas fa-trash-alt"></i> Delete
                         </button>
                     `);
 
-                    $('td:eq(6)', row).html(`
-                        <button type="button" class="btn btn-sm btn-success">
+                    $('td:eq(7)', row).html(`
+                        <button type="button" class="btn btn-sm btn-success" onclick="PrintOtRequestForm('${data[0]}')">
                             <i class="fas fa-print"></i> Print
                         </button>
                     `);
@@ -194,6 +210,17 @@
             });
         }
 
+        function PrintOtRequestForm(req_id) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("PrintRequestForm", "OvertimeRequest")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { req_id },
+                success: function () {
+
+                }
+            });
+        }
 
     </script>
 }
