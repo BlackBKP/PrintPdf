@@ -1,12 +1,93 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<button class="btn btn-primary">
-    @Html.ActionLink("Print OT", "PrintReport")
-</button>
-<button class="btn btn-primary">
-    @Html.ActionLink("Print DR", "PrintDailyReport")
-</button>
-<button class="btn btn-primary">
-    @Html.ActionLink("Print OT REQ", "PrintOvertimeRequest")
-</button>
+<div class="row p-3">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Form Demo</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <div class="col-xl-4">
+                            <button type="button" class="btn btn-primary form-control" onclick="PrintOtRequest()">
+                                Overtime Request
+                            </button>
+                        </div>
+                        <div class="col-xl-4">
+                            <button type="button" class="btn btn-primary form-control" onclick="PrintOT()">
+                                Overtime
+                            </button>
+                        </div>
+                        <div class="col-xl-4">
+                            <button type="button" class="btn btn-primary form-control" onclick="PrintDailyReport()">
+                                Daily Report
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Dynamic Form</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input id="report_id" type="text" class="form-control" placeholder="Report Name" />
+                            <div class="input-group-append">
+                                <button id="btn_print" type="button" class="btn btn-secondary">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function PrintOtRequest() {
+            var url = '@Url.Action("OvertimeRequest","Home")';
+            window.location.href = url;
+        }
+
+        function PrintOT() {
+            var url = '@Url.Action("Report", "Home")';
+            window.location.href = url;
+        }
+
+        function PrintDailyReport() {
+            var url = '@Url.Action("DailyReport", "Home")';
+            window.location.href = url;
+        }
+
+        $('#btn_print').on('click', async function () {
+            var req_id = $('#report_id').val();
+            await UpdateReportData(req_id);
+            var url = '@Url.Action("DynamicReport", "Home")';
+            window.location.href = url;
+        });
+
+        async function UpdateReportData(req_id) {
+            await $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateReportData", "Home")',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { req_id },
+                success: function (response) {
+
+                }
+            });
+        }
+    </script>
+}

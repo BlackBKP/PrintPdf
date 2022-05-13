@@ -12,6 +12,8 @@ namespace PrintPdf.Controllers
 {
     public class HomeController : Controller
     {
+        static FormOvertimeRequestModel req;
+
         public IActionResult Index()
         {
             return View();
@@ -19,32 +21,56 @@ namespace PrintPdf.Controllers
 
         public IActionResult Report()
         {
-            return View();
-        }
-
-        public IActionResult PrintReport()
-        {
-            return new ViewAsPdf("Report");
+            var OvertimeReport = new ViewAsPdf("Report")
+            {
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                ViewName = "Overtime",
+            };
+            return OvertimeReport;
         }
 
         public IActionResult DailyReport()
         {
-            return View();
-        }
-
-        public IActionResult PrintDailyReport()
-        {
-            return new ViewAsPdf("DailyReport");
+            var DailyReport = new ViewAsPdf("DailyReport")
+            {
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                ViewName = "DailyReport",
+            };
+            return DailyReport;
         }
 
         public IActionResult OvertimeRequest()
         {
-            return View();
+            var OvertimeRequest = new ViewAsPdf("OvertimeRequest")
+            {
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                ViewName = "OvertimeRequest",
+            };
+            return OvertimeRequest;
         }
 
-        public IActionResult PrintOvertimeRequest()
+        [HttpPost]
+        public string UpdateReportData(string req_id)
         {
-            return new ViewAsPdf("OvertimeRequest");
+            req = new FormOvertimeRequestModel();
+            req.form_id = req_id;
+            return "Success";
+        }
+
+        public IActionResult DynamicReport()
+        {
+            req.employee_name = "Korakod.P";
+            var DynamicReport = new ViewAsPdf("DynamicReport")
+            {
+                Model = req,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                ViewName = "DynamicReport",
+            };
+            return DynamicReport;
         }
     }
 }
